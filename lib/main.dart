@@ -726,6 +726,16 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     );
   }
 
+  int _calculateTravelDays(String startStr, String endStr) {
+    try {
+      final start = DateTime.parse(startStr);
+      final end = DateTime.parse(endStr);
+      return end.difference(start).inDays + 1;
+    } catch (_) {
+      return 1;
+    }
+  }
+
   String _formatShortDateWithYear(String dateStr) {
     try {
       final d = DateTime.parse(dateStr);
@@ -797,7 +807,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            '${book.pages.length}일',
+                            '${_calculateTravelDays(book.startDate, book.endDate)}일',
                             style: GoogleFonts.gaegu(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         )
