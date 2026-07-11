@@ -1310,7 +1310,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     Text(
                       '여 행 기',
                       style: GoogleFonts.gaegu(
-                        fontSize: 26,
+                        fontSize: 34,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                         letterSpacing: 4.0,
@@ -1461,40 +1461,40 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   Widget _buildMetadataBox(String title, String value) {
     return Expanded(
-      child: Container(
-        height: 52,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.black, width: 2.5),
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.gaegu(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 3),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                value.isEmpty ? '-' : value,
+      child: CustomPaint(
+        painter: DoodleBoxPainter(),
+        child: Container(
+          height: 52,
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
                 style: GoogleFonts.gaegu(
-                  fontSize: 17,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  height: 1.1,
+                  color: Colors.black87,
                 ),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
               ),
-            ),
-          ],
+              const SizedBox(height: 1),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  value.isEmpty ? '-' : value,
+                  style: GoogleFonts.gaegu(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    height: 1.1,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1543,19 +1543,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         const SizedBox(width: 8),
         // Speech Bubble
         Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.black, width: 3),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-                bottomRight: Radius.circular(16),
-                bottomLeft: Radius.circular(2),
-              ),
-            ),
-            child: Column(
+          child: CustomPaint(
+            painter: DoodleSpeechBubblePainter(),
+            child: Container(
+              padding: const EdgeInsets.only(left: 18, right: 14, top: 12, bottom: 20),
+              child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -1603,9 +1595,10 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               ],
             ),
           ),
-        )
-      ],
-    );
+        ),
+      )
+    ],
+  );
   }
 
   // View 4 & 5: Add / Edit page entry screen
@@ -2083,3 +2076,110 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     );
   }
 }
+
+class DoodleBoxPainter extends CustomPainter {
+  final Color strokeColor;
+  final Color fillColor;
+  final double strokeWidth;
+
+  DoodleBoxPainter({
+    this.strokeColor = Colors.black,
+    this.fillColor = Colors.white,
+    this.strokeWidth = 2.5,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fillPaint = Paint()
+      ..color = fillColor
+      ..style = PaintingStyle.fill;
+
+    final strokePaint = Paint()
+      ..color = strokeColor
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final w = size.width;
+    final h = size.height;
+
+    final RRect rrect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(2, 2, w - 4, h - 4),
+      const Radius.circular(8),
+    );
+    canvas.drawRRect(rrect, fillPaint);
+
+    final path = Path();
+    path.moveTo(4, 3);
+    path.quadraticBezierTo(w * 0.5, 1, w - 3, 4);
+    path.quadraticBezierTo(w - 1, h * 0.5, w - 4, h - 3);
+    path.quadraticBezierTo(w * 0.5, h - 1, 3, h - 4);
+    path.quadraticBezierTo(1, h * 0.5, 4, 3);
+    canvas.drawPath(path, strokePaint);
+
+    // Secondary overlap line to enhance hand-drawn feel
+    final path2 = Path();
+    path2.moveTo(6, 4);
+    path2.quadraticBezierTo(w * 0.5, 2, w - 4, 3.5);
+    path2.quadraticBezierTo(w - 2, h * 0.5, w - 3, h - 5);
+    canvas.drawPath(path2, strokePaint..strokeWidth = strokeWidth * 0.6);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class DoodleSpeechBubblePainter extends CustomPainter {
+  final Color strokeColor;
+  final Color fillColor;
+  final double strokeWidth;
+
+  DoodleSpeechBubblePainter({
+    this.strokeColor = Colors.black,
+    this.fillColor = Colors.white,
+    this.strokeWidth = 3.0,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final fillPaint = Paint()
+      ..color = fillColor
+      ..style = PaintingStyle.fill;
+
+    final strokePaint = Paint()
+      ..color = strokeColor
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final w = size.width;
+    final h = size.height;
+
+    final path = Path();
+    path.moveTo(14, 4);
+    path.quadraticBezierTo(w * 0.5, 1, w - 10, 5);
+    path.quadraticBezierTo(w - 2, 4, w - 4, 14);
+    path.quadraticBezierTo(w - 1, h * 0.5, w - 5, h - 14);
+    path.quadraticBezierTo(w - 3, h - 10, w - 14, h - 12);
+    path.quadraticBezierTo(w * 0.5, h - 9, 24, h - 12);
+    path.lineTo(6, h - 2); // tail tip pointing down-left
+    path.lineTo(16, h - 22);
+    path.quadraticBezierTo(10, h * 0.5, 14, 4);
+
+    canvas.drawPath(path, fillPaint);
+    canvas.drawPath(path, strokePaint);
+
+    // Secondary sketch line
+    final path2 = Path();
+    path2.moveTo(16, 6);
+    path2.quadraticBezierTo(w * 0.5, 3, w - 12, 7);
+    path2.quadraticBezierTo(w - 4, h * 0.5, w - 7, h - 16);
+    canvas.drawPath(path2, strokePaint..strokeWidth = strokeWidth * 0.6);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
