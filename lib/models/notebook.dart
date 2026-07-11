@@ -10,6 +10,7 @@ class NotebookPage {
   final String done;
   final String eaten;
   final String bought;
+  final String notes; // Added field for speech bubble diary note
   final List<String> images; // Base64 image strings
 
   NotebookPage({
@@ -22,6 +23,7 @@ class NotebookPage {
     required this.done,
     required this.eaten,
     required this.bought,
+    required this.notes,
     required this.images,
   });
 
@@ -36,6 +38,7 @@ class NotebookPage {
       'done': done,
       'eaten': eaten,
       'bought': bought,
+      'notes': notes,
       'images': images,
     };
   }
@@ -51,6 +54,7 @@ class NotebookPage {
       done: map['done'] ?? '',
       eaten: map['eaten'] ?? '',
       bought: map['bought'] ?? '',
+      notes: map['notes'] ?? '',
       images: List<String>.from(map['images'] ?? []),
     );
   }

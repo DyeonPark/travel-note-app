@@ -79,6 +79,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   final _pageDoneController = TextEditingController();
   final _pageEatenController = TextEditingController();
   final _pageBoughtController = TextEditingController();
+  final _pageNotesController = TextEditingController(); // Added controller for speech bubble
   List<String> _pageImages = []; // Base64 strings
 
   // Custom alert modal config
@@ -225,6 +226,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       done: _pageDoneController.text.trim(),
       eaten: _pageEatenController.text.trim(),
       bought: _pageBoughtController.text.trim(),
+      notes: _pageNotesController.text.trim(),
       images: List<String>.from(_pageImages),
     );
 
@@ -257,6 +259,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       _pageDoneController.text = page.done;
       _pageEatenController.text = page.eaten;
       _pageBoughtController.text = page.bought;
+      _pageNotesController.text = page.notes;
       _pageImages = List<String>.from(page.images);
       _currentView = 'edit-page';
     });
@@ -278,6 +281,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             done: _pageDoneController.text.trim(),
             eaten: _pageEatenController.text.trim(),
             bought: _pageBoughtController.text.trim(),
+            notes: _pageNotesController.text.trim(),
             images: List<String>.from(_pageImages),
           );
         }
@@ -318,6 +322,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             done: p.done,
             eaten: p.eaten,
             bought: p.bought,
+            notes: p.notes,
             images: p.images,
           );
         });
@@ -347,6 +352,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     _pageDoneController.clear();
     _pageEatenController.clear();
     _pageBoughtController.clear();
+    _pageNotesController.clear();
     _pageImages = [];
   }
 
@@ -1247,215 +1253,135 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              // Page Topbar
+              // Page Topbar (Edit/Delete controls)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          border: Border.all(color: Colors.black, width: 2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'Day ${page.dayNum}',
-                          style: GoogleFonts.gaegu(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(page.date, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
-                    ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'Day ${page.dayNum}',
+                      style: GoogleFonts.gaegu(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _buildStars(page.rating, size: 12),
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey.shade300, width: 1),
-                          borderRadius: BorderRadius.circular(4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey.shade300, width: 1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _startEditingPage(page),
+                          child: const Text('✏️ 고치기', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
                         ),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () => _startEditingPage(page),
-                              child: const Text('✏️ 고치기', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4),
-                              child: Text('|', style: TextStyle(fontSize: 9, color: Colors.grey)),
-                            ),
-                            GestureDetector(
-                              onTap: () => _handleDeletePage(page.id),
-                              child: const Text('🗑️ 삭제', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
-                            ),
-                          ],
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          child: Text('|', style: TextStyle(fontSize: 9, color: Colors.grey)),
                         ),
-                      )
-                    ],
+                        GestureDetector(
+                          onTap: () => _handleDeletePage(page.id),
+                          child: const Text('🗑️ 삭제', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
 
-              // Place / Who
+              // 1. Title Header inside the sheet: Rabbit - "여행기" - Tiger
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SvgPicture.string(rabbitHeaderSvg, width: 42, height: 42),
+                    Text(
+                      '여 행 기',
+                      style: GoogleFonts.gaegu(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        letterSpacing: 4.0,
+                      ),
+                    ),
+                    SvgPicture.string(tigerHeaderSvg, width: 42, height: 42),
+                  ],
+                ),
+              ),
+
+              // 2. Metadata Boxes ("언제", "어디", "누구랑")
               Row(
                 children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFAF9F6),
-                        border: Border.all(color: Colors.black, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.string(mapPinSvg, width: 14, height: 14),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('PLACE', style: TextStyle(fontSize: 7, color: Colors.grey, fontWeight: FontWeight.bold)),
-                                Text(
-                                  page.place,
-                                  style: GoogleFonts.gaegu(fontSize: 12, fontWeight: FontWeight.bold, height: 1.1),
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  _buildMetadataBox('언 제', page.date),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFAF9F6),
-                        border: Border.all(color: Colors.black, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.string(peopleSvg, width: 14, height: 14),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('WITH', style: TextStyle(fontSize: 7, color: Colors.grey, fontWeight: FontWeight.bold)),
-                                Text(
-                                  page.people,
-                                  style: GoogleFonts.gaegu(fontSize: 12, fontWeight: FontWeight.bold, height: 1.1),
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
+                  _buildMetadataBox('어 디', page.place),
+                  const SizedBox(width: 8),
+                  _buildMetadataBox('누구랑', page.people),
                 ],
               ),
 
-              const SizedBox(height: 10),
-
-              // Photo Gallery Grid (3 frame polaroid layout)
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFAF9F6),
-                  border: Border.all(color: Colors.black, width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
+              // 3. Dashed line Separator
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
-                  children: List.generate(3, (idx) {
-                    final hasImage = page.images.length > idx;
-                    final imgString = hasImage ? page.images[idx] : null;
-                    return Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 3),
-                        child: AspectRatio(
-                          aspectRatio: 1.0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                          child: Stack(
-                            children: [
-                              if (imgString != null)
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: Image.memory(
-                                    base64Decode(imgString.replaceFirst(RegExp(r'data:image/[^;]+;base64,'), '')),
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                  ),
-                                )
-                              else
-                                Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.string(tigerHeaderSvg, width: 14, height: 14),
-                                      const SizedBox(height: 2),
-                                      const Text(
-                                        'EMPTY PHOTO',
-                                        style: TextStyle(fontSize: 5, fontWeight: FontWeight.bold, color: Colors.grey),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  color: Colors.black,
-                                  padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-                                  child: Text(
-                                    '0${idx + 1}',
-                                    style: const TextStyle(fontSize: 7, color: Colors.white, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(15, (index) {
+                    return Container(
+                      width: 12,
+                      height: 3,
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
                       ),
-                    ),
-                  );
+                    );
                   }),
                 ),
               ),
 
-              const SizedBox(height: 10),
-
-              // Entry Lists (DO, EAT, BUY)
+              // 4. Main Note Area (Lined entries) & Bottom Speech Bubble
               Expanded(
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
-                    _buildEntryRow('DO', 'WHAT I DID', page.done, const Color(0xFF000000), Colors.white),
+                    _buildNoteRow('한 것', page.done),
+                    const SizedBox(height: 14),
+                    _buildNoteRow('먹은 것', page.eaten),
+                    const SizedBox(height: 14),
+                    _buildNoteRow('산 것', page.bought),
+                    const SizedBox(height: 14),
+
+                    // 여행별점
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '여행별점',
+                          style: GoogleFonts.gaegu(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        _buildStars(page.rating, size: 22),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Speech bubble with Rabbit
+                    _buildSpeechBubbleSection(page),
                     const SizedBox(height: 10),
-                    _buildEntryRow('EAT', 'WHAT I ATE', page.eaten, Colors.white, Colors.black),
-                    const SizedBox(height: 10),
-                    _buildEntryRow('BUY', 'WHAT I BOUGHT', page.bought, const Color(0xFFEBE9E4), Colors.black),
                   ],
                 ),
               ),
@@ -1519,43 +1445,150 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     );
   }
 
-  Widget _buildEntryRow(String tag, String subLabel, String content, Color tagBg, Color tagColor) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 22,
-          height: 22,
-          decoration: BoxDecoration(
-            color: tagBg,
-            border: Border.all(color: Colors.black, width: 1.5),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            tag,
-            style: TextStyle(color: tagColor, fontSize: 8, fontWeight: FontWeight.bold),
-          ),
+  Widget _buildMetadataBox(String title, String value) {
+    return Expanded(
+      child: Container(
+        height: 52,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black, width: 2.5),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                subLabel,
-                style: const TextStyle(fontSize: 7, color: Colors.grey, fontWeight: FontWeight.bold),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+                height: 1.0,
               ),
-              const SizedBox(height: 1),
-              Text(
-                content.isEmpty ? '기록하지 않았습니다.' : content,
+            ),
+            const SizedBox(height: 3),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                value.isEmpty ? '-' : value,
                 style: GoogleFonts.gaegu(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
-                  height: 1.15,
+                  height: 1.1,
                 ),
-              )
-            ],
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoteRow(String title, String content) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: GoogleFonts.gaegu(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Text(
+            content.isEmpty ? '기록하지 않았습니다.' : content,
+            style: GoogleFonts.gaegu(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black.withOpacity(0.85),
+              height: 1.25,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSpeechBubbleSection(NotebookPage page) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // Rabbit poking up from the left
+        SvgPicture.string(
+          rabbitMemoSvg,
+          width: 50,
+          height: 50,
+        ),
+        const SizedBox(width: 8),
+        // Speech Bubble
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black, width: 3),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+                bottomLeft: Radius.circular(2),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  page.notes.isEmpty ? '오늘 하루도 몽글몽글하고 소중했어. 🐰' : page.notes,
+                  style: GoogleFonts.gaegu(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    height: 1.2,
+                  ),
+                ),
+                if (page.images.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 60,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: page.images.length,
+                      itemBuilder: (context, idx) {
+                        final imgStr = page.images[idx];
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.black, width: 1.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(2),
+                              child: Image.memory(
+                                base64Decode(imgStr.replaceFirst(RegExp(r'data:image/[^;]+;base64,'), '')),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ]
+              ],
+            ),
           ),
         )
       ],
@@ -1848,6 +1881,28 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                           style: GoogleFonts.gaegu(fontSize: 14),
                           decoration: InputDecoration(
                             hintText: '소품샵, 골목 마켓에서 찾아낸 나만의 빈티지 보물은?',
+                            hintStyle: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                            fillColor: Colors.white,
+                            filled: true,
+                            contentPadding: const EdgeInsets.all(8),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('💬 더 하고 싶은 말 (말풍선 기록)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        TextField(
+                          controller: _pageNotesController,
+                          maxLines: 3,
+                          maxLength: 150,
+                          style: GoogleFonts.gaegu(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: '이 날의 특별한 생각이나 전체적인 감상을 말풍선에 담아보세요!',
                             hintStyle: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
                             fillColor: Colors.white,
                             filled: true,

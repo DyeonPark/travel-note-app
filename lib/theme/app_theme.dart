@@ -37,6 +37,7 @@ class GoogleFonts {
     double? height,
     FontStyle? fontStyle,
     TextDecoration? decoration,
+    double? letterSpacing,
   }) {
     return TextStyle(
       fontFamily: 'UhBeeMysen',
@@ -46,6 +47,7 @@ class GoogleFonts {
       height: height,
       fontStyle: fontStyle,
       decoration: decoration,
+      letterSpacing: letterSpacing,
     );
   }
 }
