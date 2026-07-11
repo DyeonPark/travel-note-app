@@ -417,7 +417,10 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               Column(
                 children: [
                   // 1. Hand Drawn Custom Header
-                  _buildHeader(),
+                  if (_currentView == 'home')
+                    _buildHeader()
+                  else
+                    const SafeArea(child: SizedBox.shrink()),
 
                   // 2. View selector
                   Expanded(
