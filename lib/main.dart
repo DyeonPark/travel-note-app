@@ -718,8 +718,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   }
 
   Widget _buildBookCard(Notebook book, int index) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final availableWidth = screenWidth - 32 - 24; // padding 32 + spacing 24
+    final width = MediaQuery.of(context).size.width;
+    final maxViewportWidth = width > 480 ? 450.0 : width;
+    final availableWidth = maxViewportWidth - 32 - 24; // padding (16*2) + spacing (12*2)
     final cardWidth = availableWidth / 3;
 
     return GestureDetector(
