@@ -62,7 +62,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   String _currentView = 'home'; // home | notebook | add-notebook | add-page | edit-page
   Notebook? _selectedNotebook;
   int _activePageIndex = 0;
-  PageController? _pageController;
   String? _editingPageId;
 
   // New Notebook Form fields
@@ -97,7 +96,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   @override
   void dispose() {
-    _pageController?.dispose();
     _newTitleController.dispose();
     _newStartController.dispose();
     _newEndController.dispose();
@@ -109,17 +107,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     _pageBoughtController.dispose();
     _pageNotesController.dispose();
     super.dispose();
-  }
-
-  void _updateActivePage(int index) {
-    setState(() {
-      _activePageIndex = index;
-    });
-    _pageController?.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
   }
 
   Future<void> _loadAllNotebooks() async {
@@ -216,8 +203,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       _notebooks.insert(0, newBook);
       _selectedNotebook = newBook;
       _activePageIndex = 0;
-      _pageController?.dispose();
-      _pageController = PageController(initialPage: 0);
       _currentView = 'notebook';
 
       // Reset form
@@ -272,8 +257,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       }).toList();
 
       _activePageIndex = updatedPages.length - 1;
-      _pageController?.dispose();
-      _pageController = PageController(initialPage: updatedPages.length - 1);
       _currentView = 'notebook';
       _resetPageForm();
     });
@@ -694,8 +677,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         setState(() {
           _selectedNotebook = book;
           _activePageIndex = 0;
-          _pageController?.dispose();
-          _pageController = PageController(initialPage: 0);
           _currentView = 'notebook';
         });
       },
@@ -1056,195 +1037,172 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   Widget _buildNotebookView() {
     if (_selectedNotebook == null) return const SizedBox();
 
-    return Column(
-      children: [
-        // Inner Navbar
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            border: Border(bottom: BorderSide(color: Colors.black, width: 3)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: () => setState(() => _currentView = 'home'),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.black, width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2, 2))],
-                  ),
-                  child: Text(
-                    '← 책장',
-                    style: GoogleFonts.gaegu(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-
-              Column(
-                children: [
-                  Text(
-                    '${_selectedNotebook!.coverEmoji} ${_selectedNotebook!.title}',
-                    style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    '${_selectedNotebook!.startDate} ~ ${_selectedNotebook!.endDate}',
-                    style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey),
-                  )
-                ],
-              ),
-
-              // Placeholder to keep the header title centered
-              const SizedBox(width: 50),
-            ],
-          ),
-        ),
-
-        // Lined Page sheet container
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black, width: 3),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(5, 5))],
-              ),
-              child: Column(
-                children: [
-                  // Binder loops
-                  Container(
-                    height: AppThemeConstants.binderLoopHeight,
-                    color: const Color(0xFFF0F0F0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: List.generate(AppThemeConstants.binderLoopCount, (index) {
-                        return Container(
-                          width: AppThemeConstants.binderLoopWidth,
-                          height: AppThemeConstants.binderLoopHeight,
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(3)),
-                          ),
-                        );
-                      }),
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        // Detect left-to-right swipe (positive velocity)
+        if (details.primaryVelocity != null && details.primaryVelocity! > 300) {
+          setState(() {
+            _currentView = 'home';
+          });
+        }
+      },
+      child: Column(
+        children: [
+          // Inner Navbar
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(bottom: BorderSide(color: Colors.black, width: 3)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () => setState(() => _currentView = 'home'),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2, 2))],
+                    ),
+                    child: Text(
+                      '← 책장',
+                      style: GoogleFonts.gaegu(fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
+                ),
 
-                  Expanded(
-                    child: _selectedNotebook!.pages.isEmpty
-                        ? _buildEmptyPagesView()
-                        : Stack(
-                            children: [
-                              PageView.builder(
-                                controller: _pageController,
-                                itemCount: _selectedNotebook!.pages.length,
-                                onPageChanged: (index) {
-                                  setState(() {
-                                    _activePageIndex = index;
-                                  });
-                                },
-                                itemBuilder: (context, index) {
-                                  return _buildLoadedPageBody(index);
-                                },
+                Column(
+                  children: [
+                    Text(
+                      '${_selectedNotebook!.coverEmoji} ${_selectedNotebook!.title}',
+                      style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '${_selectedNotebook!.startDate} ~ ${_selectedNotebook!.endDate}',
+                      style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey),
+                    )
+                  ],
+                ),
+
+                // Placeholder to keep the header title centered
+                const SizedBox(width: 50),
+              ],
+            ),
+          ),
+
+          // Daily page content occupying the rest of the screen directly!
+          Expanded(
+            child: _selectedNotebook!.pages.isEmpty
+                ? _buildEmptyPagesView()
+                : Stack(
+                    children: [
+                      // Render the page body directly
+                      _buildLoadedPageBody(_activePageIndex),
+
+                      // Left Edge Touch Area for Previous Page
+                      if (_activePageIndex > 0)
+                        Positioned(
+                          left: 0,
+                          top: 40,
+                          bottom: 40,
+                          width: 48,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              if (_activePageIndex > 0) {
+                                setState(() {
+                                  _activePageIndex--;
+                                });
+                              }
+                            },
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.03),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.chevron_left,
+                                  color: Colors.black26,
+                                  size: 20,
+                                ),
                               ),
-                              // Left Edge Touch Area for Previous Page
-                              if (_activePageIndex > 0)
-                                Positioned(
-                                  left: 0,
-                                  top: 40,
-                                  bottom: 40,
-                                  width: 48,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () => _updateActivePage(_activePageIndex - 1),
-                                    child: Center(
-                                      child: Container(
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.03),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.chevron_left,
-                                          color: Colors.black26,
-                                          size: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              // Right Edge Touch Area for Next Page
-                              if (_activePageIndex < _selectedNotebook!.pages.length - 1)
-                                Positioned(
-                                  right: 0,
-                                  top: 40,
-                                  bottom: 40,
-                                  width: 48,
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () => _updateActivePage(_activePageIndex + 1),
-                                    child: Center(
-                                      child: Container(
-                                        padding: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.03),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.chevron_right,
-                                          color: Colors.black26,
-                                          size: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
+                            ),
                           ),
-                  )
-                ],
-              ),
-            ),
+                        ),
+                      // Right Edge Touch Area for Next Page
+                      if (_activePageIndex < _selectedNotebook!.pages.length - 1)
+                        Positioned(
+                          right: 0,
+                          top: 40,
+                          bottom: 40,
+                          width: 48,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              if (_activePageIndex < _selectedNotebook!.pages.length - 1) {
+                                setState(() {
+                                  _activePageIndex++;
+                                });
+                              }
+                            },
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.03),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.chevron_right,
+                                  color: Colors.black26,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
           ),
-        ),
 
-        // Bottomday adder button
-        if (_selectedNotebook!.pages.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: GestureDetector(
-              onTap: () {
-                final last = _selectedNotebook!.pages.last;
-                final lastDate = DateTime.parse(last.date);
-                final nextDate = lastDate.add(const Duration(days: 1));
-                final nextDateStr = nextDate.toString().split(' ')[0];
-                _resetPageForm();
-                setState(() {
-                  _pageDateController.text = nextDateStr;
-                  _currentView = 'add-page';
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  border: Border.all(color: Colors.black, width: 2),
-                  boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(4, 4))],
-                ),
-                child: Text(
-                  '+ 다음 하루 스케치하기 (Day ${_selectedNotebook!.pages.length + 1})',
-                  style: GoogleFonts.gaegu(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
+          // Bottomday adder button
+          if (_selectedNotebook!.pages.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 10),
+              child: GestureDetector(
+                onTap: () {
+                  final last = _selectedNotebook!.pages.last;
+                  final lastDate = DateTime.parse(last.date);
+                  final nextDate = lastDate.add(const Duration(days: 1));
+                  final nextDateStr = nextDate.toString().split(' ')[0];
+                  _resetPageForm();
+                  setState(() {
+                    _pageDateController.text = nextDateStr;
+                    _currentView = 'add-page';
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(color: Colors.black, width: 2),
+                    boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(4, 4))],
+                  ),
+                  child: Text(
+                    '+ 다음 하루 스케치하기 (Day ${_selectedNotebook!.pages.length + 1})',
+                    style: GoogleFonts.gaegu(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -1442,7 +1400,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     GestureDetector(
                       onTap: () {
                         if (_activePageIndex > 0) {
-                          _updateActivePage(_activePageIndex - 1);
+                          setState(() {
+                            _activePageIndex--;
+                          });
                         }
                       },
                       child: Opacity(
@@ -1469,7 +1429,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     GestureDetector(
                       onTap: () {
                         if (_activePageIndex < _selectedNotebook!.pages.length - 1) {
-                          _updateActivePage(_activePageIndex + 1);
+                          setState(() {
+                            _activePageIndex++;
+                          });
                         }
                       },
                       child: Opacity(
