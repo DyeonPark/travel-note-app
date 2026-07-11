@@ -1297,7 +1297,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SvgPicture.string(rabbitHeaderSvg, width: 42, height: 42),
+                    SvgPicture.string(rabbitHeaderSvg, width: 50, height: 50),
                     Text(
                       '여 행 기',
                       style: GoogleFonts.gaegu(
@@ -1307,7 +1307,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         letterSpacing: 4.0,
                       ),
                     ),
-                    SvgPicture.string(tigerHeaderSvg, width: 42, height: 42),
+                    SvgPicture.string(tigerHeaderSvg, width: 50, height: 50),
                   ],
                 ),
               ),
