@@ -232,7 +232,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   }
 
   void _handleDeleteNotebook(String id) {
-    _triggerConfirm("정말 이 수첩을 영영 찢어버릴까요? 😢\n소중하게 남겨둔 하루하루가 완전히 지워집니다.", () {
+    _triggerConfirm("이 여행 수첩을 삭제하시겠습니까?", () {
       setState(() {
         _notebooks.removeWhere((b) => b.id == id);
         _selectedNotebook = null;
@@ -335,47 +335,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     });
 
     _saveAll();
-  }
-
-  void _handleDeletePage(String pageId) {
-    _triggerConfirm("이 하루의 스케치를 정말로 지워버릴까요?", () {
-      setState(() {
-        final filtered = _selectedNotebook!.pages.where((p) => p.id != pageId).toList();
-        // Reorder dayNum
-        final reordered = List<NotebookPage>.generate(filtered.length, (idx) {
-          final p = filtered[idx];
-          return NotebookPage(
-            id: p.id,
-            dayNum: idx + 1,
-            date: p.date,
-            place: p.place,
-            people: p.people,
-            rating: p.rating,
-            done: p.done,
-            eaten: p.eaten,
-            bought: p.bought,
-            notes: p.notes,
-            images: p.images,
-          );
-        });
-
-        final avgRating = reordered.isEmpty
-            ? 5
-            : (reordered.map((e) => e.rating).reduce((a, b) => a + b) / reordered.length).round();
-
-        _notebooks = _notebooks.map((b) {
-          if (b.id == _selectedNotebook!.id) {
-            return b.copyWith(pages: reordered, rating: avgRating);
-          }
-          return b;
-        }).toList();
-
-        _activePageIndex = (_activePageIndex - 1).clamp(0, reordered.isEmpty ? 0 : reordered.length - 1);
-        _pageController?.dispose();
-        _pageController = PageController(initialPage: _activePageIndex);
-      });
-      _saveAll();
-    });
   }
 
   void _resetPageForm() {
@@ -737,6 +696,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           _currentView = 'notebook';
         });
       },
+      onLongPress: () => _handleDeleteNotebook(book.id),
       child: Transform.rotate(
         angle: index % 2 == 0 ? -0.03 : 0.03,
         child: Container(
@@ -1135,18 +1095,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 ],
               ),
 
-              GestureDetector(
-                onTap: () => _handleDeleteNotebook(_selectedNotebook!.id),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFE3E3),
-                    border: Border.all(color: Colors.black, width: 2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text('🗑️', style: TextStyle(fontSize: 12)),
-                ),
-              )
+              // Placeholder to keep the header title centered
+              const SizedBox(width: 50),
             ],
           ),
         ),
@@ -1379,21 +1329,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       border: Border.all(color: Colors.grey.shade300, width: 1),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => _startEditingPage(page),
-                          child: const Text('✏️ 고치기', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4),
-                          child: Text('|', style: TextStyle(fontSize: 9, color: Colors.grey)),
-                        ),
-                        GestureDetector(
-                          onTap: () => _handleDeletePage(page.id),
-                          child: const Text('🗑️ 삭제', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey)),
-                        ),
-                      ],
+                    child: GestureDetector(
+                      onTap: () => _startEditingPage(page),
+                      child: const Text('✏️ 고치기', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
                     ),
                   )
                 ],
