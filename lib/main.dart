@@ -346,6 +346,41 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     _pageImages = [];
   }
 
+  Future<void> _pickDate(TextEditingController controller) async {
+    DateTime initialDate = DateTime.now();
+    try {
+      if (controller.text.trim().isNotEmpty) {
+        initialDate = DateTime.parse(controller.text.trim());
+      }
+    } catch (_) {}
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Color(0xFFFDFBF7),
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        controller.text = picked.toString().split(' ')[0];
+      });
+    }
+  }
+
   Color _parseColor(String hex) {
     try {
       return Color(int.parse(hex.replaceFirst('#', '0xFF')));
@@ -860,10 +895,13 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         const SizedBox(height: 4),
                         TextField(
                           controller: _newStartController,
+                          readOnly: true,
+                          onTap: () => _pickDate(_newStartController),
                           style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
-                            hintText: 'YYYY-MM-DD',
+                            hintText: '탭하여 선택',
                             hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
+                            suffixIcon: const Icon(Icons.calendar_today, size: 18, color: Colors.black54),
                             contentPadding: const EdgeInsets.all(8),
                             border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black), borderRadius: BorderRadius.circular(8)),
                           ),
@@ -880,10 +918,13 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         const SizedBox(height: 4),
                         TextField(
                           controller: _newEndController,
+                          readOnly: true,
+                          onTap: () => _pickDate(_newEndController),
                           style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
-                            hintText: 'YYYY-MM-DD',
+                            hintText: '탭하여 선택',
                             hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
+                            suffixIcon: const Icon(Icons.calendar_today, size: 18, color: Colors.black54),
                             contentPadding: const EdgeInsets.all(8),
                             border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black), borderRadius: BorderRadius.circular(8)),
                           ),
@@ -1656,10 +1697,13 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         Text('언 제', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
         TextField(
           controller: _pageDateController,
+          readOnly: true,
+          onTap: () => _pickDate(_pageDateController),
           style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
           decoration: InputDecoration(
-            hintText: 'YYYY-MM-DD',
+            hintText: '탭하여 날짜 선택',
             hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+            suffixIcon: const Icon(Icons.calendar_today, size: 20, color: Colors.black54),
             border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
             enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
             focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
