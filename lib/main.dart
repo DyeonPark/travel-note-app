@@ -351,16 +351,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2),
             child: SvgPicture.string(
-              '''<svg viewBox="0 0 24 24" fill="none">
-                <path 
-                  d="M12 2.5L14.7 7.8L20.5 8.4L16.2 12.3L17.5 18L12 15.1L6.5 18L7.8 12.3L3.5 8.4L9.3 7.8L12 2.5Z" 
-                  stroke="black" 
-                  stroke-width="2.5" 
-                  stroke-linecap="round" 
-                  stroke-linejoin="round"
-                  fill="${isFilled ? 'black' : 'transparent'}" 
-                />
-              </svg>''',
+              isFilled ? filledStarSvg : emptyStarSvg,
               width: size,
               height: size,
             ),
