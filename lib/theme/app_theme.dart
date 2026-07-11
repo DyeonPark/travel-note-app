@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class CoverColorOption {
   final String name;
   final String value;
@@ -24,4 +26,26 @@ class AppThemeConstants {
   static const double binderLoopHeight = 14.0;      // 스프링 고리 높이
   static const double binderLoopWidth = 8.0;        // 스프링 고리 두께
   static const int binderLoopCount = 9;             // 스프링 고리 개수
+}
+
+// 4. 구글 폰트 호출을 어비 마이센체(UhBeeMysen)로 연동해 주는 모조 어댑터 클래스
+class GoogleFonts {
+  static TextStyle gaegu({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+    FontStyle? fontStyle,
+    TextDecoration? decoration,
+  }) {
+    return TextStyle(
+      fontFamily: 'UhBeeMysen',
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+      height: height,
+      fontStyle: fontStyle,
+      decoration: decoration,
+    );
+  }
 }

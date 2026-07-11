@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import './models/notebook.dart';
@@ -23,9 +22,7 @@ class MongleApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFFDFBF7),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-        textTheme: GoogleFonts.gaeguTextTheme(
-          Theme.of(context).textTheme,
-        ),
+        fontFamily: 'UhBeeMysen',
       ),
       home: const MainHomeScreen(),
     );
