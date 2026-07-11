@@ -1133,7 +1133,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2, 2))],
                     ),
                     child: Text(
-                      '← 책장',
+                      '돌아가기',
                       style: GoogleFonts.gaegu(fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -1259,8 +1259,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(4, 4))],
                   ),
                   child: Text(
-                    '+ 다음 하루 스케치하기 (Day ${_selectedNotebook!.pages.length + 1})',
-                    style: GoogleFonts.gaegu(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
+                    '+ 기록 추가하기 (Day ${_selectedNotebook!.pages.length + 1})',
+                    style: GoogleFonts.gaegu(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ),
@@ -1279,13 +1279,13 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           SvgPicture.string(notebookIconSvg, width: 50, height: 50),
           const SizedBox(height: 10),
           Text(
-            '아직 스케치된 하루가 없어요!',
-            style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold),
+            '아직 남겨진 기록이 없어요!',
+            style: GoogleFonts.gaegu(fontSize: 40, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
-            '이 여정의 기억들을 한 장 한 장\n아름답고 심플하게 기록해 나가보세요.',
-            style: GoogleFonts.gaegu(fontSize: 12, color: Colors.grey),
+            '즐거운 여행의 기록을\n간단하게 기록해 나가보세요.',
+            style: GoogleFonts.gaegu(fontSize: 30, color: Colors.grey),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
@@ -1306,8 +1306,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(3, 3))],
               ),
               child: Text(
-                '+ 첫째 날 스케치 쓰기',
-                style: GoogleFonts.gaegu(fontSize: 14, fontWeight: FontWeight.bold),
+                '+ 기록 추가하기',
+                style: GoogleFonts.gaegu(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
           )
@@ -1328,12 +1328,12 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         ),
 
         Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: Column(
             children: [
               // 1. One line Header Row (Day badge, Rabbit, "여 행 기", Tiger, Edit button)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1389,7 +1389,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                             const Icon(Icons.edit, size: 14, color: Colors.black),
                             const SizedBox(width: 4),
                             Text(
-                              '고치기',
+                              '수정하기',
                               style: GoogleFonts.gaegu(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                           ],
@@ -1436,11 +1436,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   padding: EdgeInsets.zero,
                   children: [
                     _buildNoteRow('한 것', page.done),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 30),
                     _buildNoteRow('먹은 것', page.eaten),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 30),
                     _buildNoteRow('산 것', page.bought),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 30),
 
                     // 여행별점
                     Row(
@@ -1707,7 +1707,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              isEdit ? '📝 기록 수정하기' : '✍️ Day ${_selectedNotebook!.pages.length + 1} 기억 긋기',
+              isEdit ? '📝 기록 수정하기' : '✍️ Day ${_selectedNotebook!.pages.length + 1} 기록 추가하기',
               style: GoogleFonts.gaegu(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
             ),
             Container(
@@ -1811,7 +1811,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         ),
 
         // 한 것
-        Text('한 것', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        Text('한 것', style: GoogleFonts.gaegu(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black)),
         TextField(
           controller: _pageDoneController,
           maxLines: null,
@@ -1831,7 +1831,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         const SizedBox(height: 16),
 
         // 먹은 것
-        Text('먹은 것', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        Text('먹은 것', style: GoogleFonts.gaegu(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black)),
         TextField(
           controller: _pageEatenController,
           maxLines: null,
@@ -1851,7 +1851,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         const SizedBox(height: 16),
 
         // 산 것
-        Text('산 것', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        Text('산 것', style: GoogleFonts.gaegu(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black)),
         TextField(
           controller: _pageBoughtController,
           maxLines: null,
@@ -1989,7 +1989,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             ),
             alignment: Alignment.center,
             child: Text(
-              isEdit ? '수정 완료하기 ✏️' : '하루 스케치 저장하기 🖋️',
+              isEdit ? '수정 완료하기' : '기록 저장하기',
               style: GoogleFonts.gaegu(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ),
