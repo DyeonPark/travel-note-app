@@ -62,6 +62,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   String _currentView = 'home'; // home | notebook | add-notebook | add-page | edit-page
   Notebook? _selectedNotebook;
   int _activePageIndex = 0;
+  PageController? _pageController;
   String? _editingPageId;
 
   // New Notebook Form fields
@@ -92,6 +93,33 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   void initState() {
     super.initState();
     _loadAllNotebooks();
+  }
+
+  @override
+  void dispose() {
+    _pageController?.dispose();
+    _newTitleController.dispose();
+    _newStartController.dispose();
+    _newEndController.dispose();
+    _pageDateController.dispose();
+    _pagePlaceController.dispose();
+    _pagePeopleController.dispose();
+    _pageDoneController.dispose();
+    _pageEatenController.dispose();
+    _pageBoughtController.dispose();
+    _pageNotesController.dispose();
+    super.dispose();
+  }
+
+  void _updateActivePage(int index) {
+    setState(() {
+      _activePageIndex = index;
+    });
+    _pageController?.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   Future<void> _loadAllNotebooks() async {
@@ -188,6 +216,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       _notebooks.insert(0, newBook);
       _selectedNotebook = newBook;
       _activePageIndex = 0;
+      _pageController?.dispose();
+      _pageController = PageController(initialPage: 0);
       _currentView = 'notebook';
 
       // Reset form
@@ -242,6 +272,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       }).toList();
 
       _activePageIndex = updatedPages.length - 1;
+      _pageController?.dispose();
+      _pageController = PageController(initialPage: updatedPages.length - 1);
       _currentView = 'notebook';
       _resetPageForm();
     });
@@ -339,6 +371,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         }).toList();
 
         _activePageIndex = (_activePageIndex - 1).clamp(0, reordered.isEmpty ? 0 : reordered.length - 1);
+        _pageController?.dispose();
+        _pageController = PageController(initialPage: _activePageIndex);
       });
       _saveAll();
     });
@@ -698,6 +732,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         setState(() {
           _selectedNotebook = book;
           _activePageIndex = 0;
+          _pageController?.dispose();
+          _pageController = PageController(initialPage: 0);
           _currentView = 'notebook';
         });
       },
@@ -1150,7 +1186,74 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   Expanded(
                     child: _selectedNotebook!.pages.isEmpty
                         ? _buildEmptyPagesView()
-                        : _buildLoadedPageBody(),
+                        : Stack(
+                            children: [
+                              PageView.builder(
+                                controller: _pageController,
+                                itemCount: _selectedNotebook!.pages.length,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    _activePageIndex = index;
+                                  });
+                                },
+                                itemBuilder: (context, index) {
+                                  return _buildLoadedPageBody(index);
+                                },
+                              ),
+                              // Left Edge Touch Area for Previous Page
+                              if (_activePageIndex > 0)
+                                Positioned(
+                                  left: 0,
+                                  top: 40,
+                                  bottom: 40,
+                                  width: 48,
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onTap: () => _updateActivePage(_activePageIndex - 1),
+                                    child: Center(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.03),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.chevron_left,
+                                          color: Colors.black26,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              // Right Edge Touch Area for Next Page
+                              if (_activePageIndex < _selectedNotebook!.pages.length - 1)
+                                Positioned(
+                                  right: 0,
+                                  top: 40,
+                                  bottom: 40,
+                                  width: 48,
+                                  child: GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onTap: () => _updateActivePage(_activePageIndex + 1),
+                                    child: Center(
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.03),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.chevron_right,
+                                          color: Colors.black26,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                   )
                 ],
               ),
@@ -1238,8 +1341,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     );
   }
 
-  Widget _buildLoadedPageBody() {
-    final page = _selectedNotebook!.pages[_activePageIndex];
+  Widget _buildLoadedPageBody(int pageIndex) {
+    final page = _selectedNotebook!.pages[pageIndex];
 
     return Stack(
       children: [
@@ -1396,7 +1499,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      onTap: () => setState(() => _activePageIndex = (_activePageIndex - 1).clamp(0, _selectedNotebook!.pages.length - 1)),
+                      onTap: () {
+                        if (_activePageIndex > 0) {
+                          _updateActivePage(_activePageIndex - 1);
+                        }
+                      },
                       child: Opacity(
                         opacity: _activePageIndex == 0 ? 0.3 : 1.0,
                         child: Container(
@@ -1419,7 +1526,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     ),
 
                     GestureDetector(
-                      onTap: () => setState(() => _activePageIndex = (_activePageIndex + 1).clamp(0, _selectedNotebook!.pages.length - 1)),
+                      onTap: () {
+                        if (_activePageIndex < _selectedNotebook!.pages.length - 1) {
+                          _updateActivePage(_activePageIndex + 1);
+                        }
+                      },
                       child: Opacity(
                         opacity: _activePageIndex == _selectedNotebook!.pages.length - 1 ? 0.3 : 1.0,
                         child: Container(
