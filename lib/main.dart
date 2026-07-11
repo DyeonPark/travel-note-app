@@ -821,9 +821,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       child: Text(
                         '${_formatShortDateWithYear(book.startDate)}~${_formatShortDateWithYear(book.endDate)}',
                         style: GoogleFonts.gaegu(
-                          fontSize: 10,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black54,
+                          color: Colors.black87,
                         ),
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
