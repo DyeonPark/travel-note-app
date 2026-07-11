@@ -19,9 +19,14 @@ class MongleApp extends StatelessWidget {
     return MaterialApp(
       title: '몽글수첩',
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.light,
       theme: ThemeData(
+        brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFFDFBF7),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.black,
+          brightness: Brightness.light,
+        ),
         fontFamily: 'UhBeeMysen',
       ),
       home: const MainHomeScreen(),
@@ -811,14 +816,15 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               const SizedBox(height: 16),
 
               // Title input
-              const Text('🏷️ 수첩 이름', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('🏷️ 수첩 이름', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
               const SizedBox(height: 4),
               TextField(
                 controller: _newTitleController,
                 maxLength: 15,
-                style: GoogleFonts.gaegu(fontSize: 16),
+                style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                 decoration: InputDecoration(
                   hintText: '예) 제주도 푸른바람 🌴',
+                  hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -841,13 +847,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('출발 일자', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('출발 일자', style: GoogleFonts.gaegu(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _newStartController,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: 'YYYY-MM-DD',
+                            hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
                             contentPadding: const EdgeInsets.all(8),
                             border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black), borderRadius: BorderRadius.circular(8)),
                           ),
@@ -860,13 +867,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('귀가 일자', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                        Text('귀가 일자', style: GoogleFonts.gaegu(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _newEndController,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: 'YYYY-MM-DD',
+                            hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
                             contentPadding: const EdgeInsets.all(8),
                             border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black), borderRadius: BorderRadius.circular(8)),
                           ),
@@ -880,7 +888,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               const SizedBox(height: 16),
 
               // Color choices
-              const Text('🎨 종이 질감 (표지 색)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('🎨 종이 질감 (표지 색)', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
               const SizedBox(height: 4),
               Wrap(
                 spacing: 8,
@@ -912,7 +920,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               const SizedBox(height: 16),
 
               // Emoji choices
-              const Text('🧸 대표 스티커 (이모지)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('🧸 대표 스티커 (이모지)', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
               const SizedBox(height: 4),
               Container(
                 padding: const EdgeInsets.all(8),
@@ -1644,13 +1652,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               const SizedBox(height: 16),
 
               // Date
-              const Text('📅 기록할 일자', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('📅 기록할 일자', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
               const SizedBox(height: 4),
               TextField(
                 controller: _pageDateController,
-                style: GoogleFonts.gaegu(fontSize: 16),
+                style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
                 decoration: InputDecoration(
                   hintText: 'YYYY-MM-DD',
+                  hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Colors.black)),
                 ),
@@ -1665,13 +1674,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('📍 장소', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('📍 장소', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _pagePlaceController,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: '예) 아라시야마',
+                            hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
                             contentPadding: const EdgeInsets.all(8),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
@@ -1684,13 +1694,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('👥 함께한 이', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('👥 함께한 이', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _pagePeopleController,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: '예) 나 혼자서',
+                            hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
                             contentPadding: const EdgeInsets.all(8),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
@@ -1704,7 +1715,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               const SizedBox(height: 12),
 
               // Star Rating Select
-              const Text('⭐ 하루 별점', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('⭐ 하루 별점', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
               const SizedBox(height: 4),
               Container(
                 width: double.infinity,
@@ -1724,8 +1735,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('📸 사진 보관 (최대 3장)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                  Text('${_pageImages.length}/3장', style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                  Text('📸 사진 보관 (최대 3장)', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
+                  Text('${_pageImages.length}/3장', style: GoogleFonts.gaegu(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.bold)),
                 ],
               ),
               const SizedBox(height: 4),
@@ -1814,25 +1825,25 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 ),
                 child: Column(
                   children: [
-                    const Text(
+                    Text(
                       'Write down with black felt-tip pen',
-                      style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey),
+                      style: GoogleFonts.gaegu(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
                     ),
                     const SizedBox(height: 10),
 
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('🖋️ 무엇을 하였나요?', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('🖋️ 무엇을 하였나요?', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _pageDoneController,
                           maxLines: 2,
                           maxLength: 120,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: '오늘 제일 특별하게 선을 그은 하루 발자국은?',
-                            hintStyle: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
                             fillColor: Colors.white,
                             filled: true,
                             contentPadding: const EdgeInsets.all(8),
@@ -1846,16 +1857,16 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('🍴 무엇을 먹었나요?', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('🍴 무엇을 먹었나요?', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _pageEatenController,
                           maxLines: 2,
                           maxLength: 120,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: '내 혀끝에 기쁨의 한 획을 그어준 소중한 음식은?',
-                            hintStyle: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
                             fillColor: Colors.white,
                             filled: true,
                             contentPadding: const EdgeInsets.all(8),
@@ -1869,16 +1880,16 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('🛍️ 무엇을 샀나요?', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('🛍️ 무엇을 샀나요?', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _pageBoughtController,
                           maxLines: 2,
                           maxLength: 120,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: '소품샵, 골목 마켓에서 찾아낸 나만의 빈티지 보물은?',
-                            hintStyle: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
                             fillColor: Colors.white,
                             filled: true,
                             contentPadding: const EdgeInsets.all(8),
@@ -1891,16 +1902,16 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('💬 더 하고 싶은 말 (말풍선 기록)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        Text('💬 더 하고 싶은 말 (말풍선 기록)', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                         const SizedBox(height: 4),
                         TextField(
                           controller: _pageNotesController,
                           maxLines: 3,
                           maxLength: 150,
-                          style: GoogleFonts.gaegu(fontSize: 14),
+                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                           decoration: InputDecoration(
                             hintText: '이 날의 특별한 생각이나 전체적인 감상을 말풍선에 담아보세요!',
-                            hintStyle: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
                             fillColor: Colors.white,
                             filled: true,
                             contentPadding: const EdgeInsets.all(8),
