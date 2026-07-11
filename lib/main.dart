@@ -653,13 +653,30 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             ),
           )
         else
-          // 3-Column Bookshelf Grid
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: List.generate(_notebooks.length, (index) {
-              final book = _notebooks[index];
-              return _buildBookCard(book, index);
+          // 3-Column Bookshelf Grid with Rows & Expanded for guaranteed 3 columns layout
+          Column(
+            children: List.generate((_notebooks.length / 3).ceil(), (rowIndex) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  children: List.generate(3, (colIndex) {
+                    final itemIndex = rowIndex * 3 + colIndex;
+                    if (itemIndex < _notebooks.length) {
+                      return Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: colIndex == 0 ? 0 : 6,
+                            right: colIndex == 2 ? 0 : 6,
+                          ),
+                          child: _buildBookCard(_notebooks[itemIndex], itemIndex),
+                        ),
+                      );
+                    } else {
+                      return const Expanded(child: SizedBox.shrink());
+                    }
+                  }),
+                ),
+              );
             }),
           ),
 
@@ -718,11 +735,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   }
 
   Widget _buildBookCard(Notebook book, int index) {
-    final width = MediaQuery.of(context).size.width;
-    final maxViewportWidth = width > 480 ? 450.0 : width;
-    final availableWidth = maxViewportWidth - 32 - 24; // padding (16*2) + spacing (12*2)
-    final cardWidth = availableWidth / 3;
-
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -735,7 +747,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       child: Transform.rotate(
         angle: index % 2 == 0 ? -0.03 : 0.03,
         child: Container(
-          width: cardWidth,
           height: 140,
           decoration: BoxDecoration(
             color: _parseColor(book.coverColor),
