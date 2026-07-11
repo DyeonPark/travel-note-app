@@ -707,10 +707,20 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     );
   }
 
+  String _formatShortDateWithYear(String dateStr) {
+    try {
+      final d = DateTime.parse(dateStr);
+      final yearShort = d.year.toString().substring(2); // e.g., '2026' -> '26'
+      return '$yearShort.${d.month}.${d.day}';
+    } catch (_) {
+      return dateStr;
+    }
+  }
+
   Widget _buildBookCard(Notebook book, int index) {
-    final width = MediaQuery.of(context).size.width;
-    final maxViewportWidth = width > 480 ? 450.0 : width;
-    final cardWidth = (maxViewportWidth - 56) / 3;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final availableWidth = screenWidth - 32 - 24; // padding 32 + spacing 24
+    final cardWidth = availableWidth / 3;
 
     return GestureDetector(
       onTap: () {
@@ -767,15 +777,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       children: [
                         Text(book.coverEmoji, style: const TextStyle(fontSize: 18)),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                           decoration: BoxDecoration(
                             color: Colors.black,
-                            border: Border.all(color: Colors.black, width: 1.5),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            '${book.pages.length}D',
-                            style: const TextStyle(fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold),
+                            '${book.pages.length}일',
+                            style: GoogleFonts.gaegu(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         )
                       ],
@@ -792,28 +801,20 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Container(
+                      width: double.infinity,
                       padding: const EdgeInsets.only(top: 4),
                       decoration: BoxDecoration(
                         border: Border(top: BorderSide(color: Colors.black.withOpacity(0.1), width: 1)),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              _buildStars(1, size: 10),
-                              const SizedBox(width: 2),
-                              Text(
-                                '${book.rating}',
-                                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                          const Text(
-                            'OPEN',
-                            style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey),
-                          )
-                        ],
+                      child: Text(
+                        '${_formatShortDateWithYear(book.startDate)}~${_formatShortDateWithYear(book.endDate)}',
+                        style: GoogleFonts.gaegu(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
                       ),
                     )
                   ],
