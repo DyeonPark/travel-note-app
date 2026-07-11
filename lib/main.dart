@@ -806,7 +806,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     Text(
                       book.title,
                       style: GoogleFonts.gaegu(
-                        fontSize: 14,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                         height: 1.1,
@@ -1331,56 +1331,71 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           padding: const EdgeInsets.all(12),
           child: Column(
             children: [
-              // Page Topbar (Edit/Delete controls)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      border: Border.all(color: Colors.black, width: 2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      'Day ${page.dayNum}',
-                      style: GoogleFonts.gaegu(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey.shade300, width: 1),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: GestureDetector(
-                      onTap: () => _startEditingPage(page),
-                      child: const Text('✏️ 고치기', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold)),
-                    ),
-                  )
-                ],
-              ),
-
-              const SizedBox(height: 8),
-
-              // 1. Title Header inside the sheet: Rabbit - "여행기" - Tiger
+              // 1. One line Header Row (Day badge, Rabbit, "여 행 기", Tiger, Edit button)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SvgPicture.string(rabbitHeaderSvg, width: 50, height: 50),
-                    Text(
-                      '여 행 기',
-                      style: GoogleFonts.gaegu(
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
+                    // Day badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
                         color: Colors.black,
-                        letterSpacing: 4.0,
+                        border: Border.all(color: Colors.black, width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Day ${page.dayNum}',
+                        style: GoogleFonts.gaegu(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    SvgPicture.string(tigerHeaderSvg, width: 50, height: 50),
+
+                    // Centered content (Rabbit + Title + Tiger)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SvgPicture.string(rabbitHeaderSvg, width: 52, height: 52),
+                        const SizedBox(width: 8),
+                        Text(
+                          '여 행 기',
+                          style: GoogleFonts.gaegu(
+                            fontSize: 38,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            letterSpacing: 2.0,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        SvgPicture.string(tigerHeaderSvg, width: 52, height: 52),
+                      ],
+                    ),
+
+                    // Edit button
+                    GestureDetector(
+                      onTap: () => _startEditingPage(page),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2, 2))],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.edit, size: 14, color: Colors.black),
+                            const SizedBox(width: 4),
+                            Text(
+                              '고치기',
+                              style: GoogleFonts.gaegu(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -1680,7 +1695,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Text(
-              isEdit ? '← 수정 취소하고 돌려놓기' : '← 일기장 속지로 돌아가기',
+              isEdit ? '← 수정 취소' : '← 일기장 속지로 돌아가기',
               style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
@@ -1692,7 +1707,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              isEdit ? '📝 하루의 잉크 고쳐쓰기' : '✍️ Day ${_selectedNotebook!.pages.length + 1} 기억 긋기',
+              isEdit ? '📝 기록 수정하기' : '✍️ Day ${_selectedNotebook!.pages.length + 1} 기억 긋기',
               style: GoogleFonts.gaegu(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
             ),
             Container(
@@ -1974,7 +1989,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             ),
             alignment: Alignment.center,
             child: Text(
-              isEdit ? '기록 수정 완료하기 ✏️' : '하루 스케치 저장하기 🖋️',
+              isEdit ? '수정 완료하기 ✏️' : '하루 스케치 저장하기 🖋️',
               style: GoogleFonts.gaegu(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ),
