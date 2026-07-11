@@ -1368,13 +1368,13 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         Text(
                           '여행별점',
                           style: GoogleFonts.gaegu(
-                            fontSize: 22,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        _buildStars(page.rating, size: 22),
+                        _buildStars(page.rating, size: 28),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -1459,11 +1459,10 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 10,
+              style: GoogleFonts.gaegu(
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
-                height: 1.0,
+                color: Colors.black87,
               ),
             ),
             const SizedBox(height: 3),
@@ -1472,7 +1471,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               child: Text(
                 value.isEmpty ? '-' : value,
                 style: GoogleFonts.gaegu(
-                  fontSize: 14,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                   height: 1.1,
@@ -1494,7 +1493,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         Text(
           title,
           style: GoogleFonts.gaegu(
-            fontSize: 22,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
