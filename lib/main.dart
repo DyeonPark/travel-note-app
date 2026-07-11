@@ -29,6 +29,15 @@ class MongleApp extends StatelessWidget {
         ),
         fontFamily: 'UhBeeMysen',
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: const Color(0xFFFDFBF7),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.black,
+          brightness: Brightness.light,
+        ),
+        fontFamily: 'UhBeeMysen',
+      ),
       home: const MainHomeScreen(),
     );
   }
@@ -1605,7 +1614,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     if (_selectedNotebook == null) return const SizedBox();
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       children: [
         GestureDetector(
           onTap: () {
@@ -1613,340 +1622,306 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             setState(() => _currentView = 'notebook');
           },
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.only(bottom: 16),
             child: Text(
               isEdit ? '← 수정 취소하고 돌려놓기' : '← 일기장 속지로 돌아가기',
-              style: GoogleFonts.gaegu(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+              style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
         ),
 
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.black, width: 3),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(5, 5))],
+        // Title
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              isEdit ? '📝 하루의 잉크 고쳐쓰기' : '✍️ Day ${_selectedNotebook!.pages.length + 1} 기억 긋기',
+              style: GoogleFonts.gaegu(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              color: isEdit ? Colors.grey.shade800 : Colors.black,
+              child: Text(
+                isEdit ? 'EDIT' : 'ADD',
+                style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+              ),
+            )
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        // Date
+        Text('언 제', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        TextField(
+          controller: _pageDateController,
+          style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
+          decoration: InputDecoration(
+            hintText: 'YYYY-MM-DD',
+            hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+            border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
+            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
+            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+
+        const SizedBox(height: 20),
+
+        // Place / Who
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    isEdit ? '📝 하루의 잉크 고쳐쓰기' : '✍️ Day ${_selectedNotebook!.pages.length + 1} 기억 긋기',
-                    style: GoogleFonts.gaegu(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    color: isEdit ? Colors.grey.shade800 : Colors.black,
-                    child: Text(
-                      isEdit ? 'EDIT MODE' : 'ADD MODE',
-                      style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                  Text('어 디', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+                  TextField(
+                    controller: _pagePlaceController,
+                    style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: '예) 아라시야마',
+                      hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+                      border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
+                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
+                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                   )
                 ],
               ),
-              const SizedBox(height: 16),
-
-              // Date
-              Text('📅 기록할 일자', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-              const SizedBox(height: 4),
-              TextField(
-                controller: _pageDateController,
-                style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
-                decoration: InputDecoration(
-                  hintText: 'YYYY-MM-DD',
-                  hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Colors.black)),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              // Place / Who
-              Row(
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('📍 장소', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: _pagePlaceController,
-                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '예) 아라시야마',
-                            hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
-                            contentPadding: const EdgeInsets.all(8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('👥 함께한 이', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: _pagePeopleController,
-                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '예) 나 혼자서',
-                            hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
-                            contentPadding: const EdgeInsets.all(8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        )
-                      ],
+                  Text('누구랑', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+                  TextField(
+                    controller: _pagePeopleController,
+                    style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: '예) 나 혼자서',
+                      hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+                      border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
+                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
+                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                   )
                 ],
               ),
+            ),
+          ],
+        ),
 
-              const SizedBox(height: 12),
-
-              // Star Rating Select
-              Text('⭐ 하루 별점', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-              const SizedBox(height: 4),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.05),
-                  border: Border.all(color: Colors.black, width: 2),
-                  borderRadius: BorderRadius.circular(8),
+        // Dashed line separator
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(15, (index) {
+              return Container(
+                width: 12,
+                height: 3,
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(2)),
                 ),
-                alignment: Alignment.center,
-                child: _buildStars(_pageRating, onChange: (val) => setState(() => _pageRating = val), size: 24),
-              ),
+              );
+            }),
+          ),
+        ),
 
-              const SizedBox(height: 12),
+        // 한 것
+        Text('한 것', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        TextField(
+          controller: _pageDoneController,
+          maxLines: null,
+          maxLength: 120,
+          style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
+          decoration: InputDecoration(
+            hintText: '오늘 한 일을 적어주세요',
+            hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+            border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
+            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
+            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            counterStyle: GoogleFonts.gaegu(fontSize: 11, color: Colors.grey),
+          ),
+        ),
 
-              // Photo attachment using image_picker
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('📸 사진 보관 (최대 3장)', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-                  Text('${_pageImages.length}/3장', style: GoogleFonts.gaegu(fontSize: 13, color: Colors.grey, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.05),
-                  border: Border.all(color: Colors.black, width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    ...List.generate(_pageImages.length, (idx) {
-                      final imgStr = _pageImages[idx];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black, width: 2),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: Image.memory(
-                                  base64Decode(imgStr.replaceFirst(RegExp(r'data:image/[^;]+;base64,'), '')),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                ),
-                              ),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: GestureDetector(
-                                  onTap: () => _removeSelectedImage(idx),
-                                  child: Container(
-                                    color: Colors.black,
-                                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                                    child: const Text('X', style: TextStyle(fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold)),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
+        const SizedBox(height: 16),
+
+        // 먹은 것
+        Text('먹은 것', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        TextField(
+          controller: _pageEatenController,
+          maxLines: null,
+          maxLength: 120,
+          style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
+          decoration: InputDecoration(
+            hintText: '오늘 먹은 것을 적어주세요',
+            hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+            border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
+            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
+            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            counterStyle: GoogleFonts.gaegu(fontSize: 11, color: Colors.grey),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 산 것
+        Text('산 것', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        TextField(
+          controller: _pageBoughtController,
+          maxLines: null,
+          maxLength: 120,
+          style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
+          decoration: InputDecoration(
+            hintText: '오늘 산 것을 적어주세요',
+            hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+            border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
+            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
+            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            counterStyle: GoogleFonts.gaegu(fontSize: 11, color: Colors.grey),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // 여행별점 — inline row matching reading view
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('여행별점', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+            const SizedBox(width: 12),
+            _buildStars(_pageRating, onChange: (val) => setState(() => _pageRating = val), size: 28),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        // 💬 더 하고 싶은 말
+        Text('💬 더 하고 싶은 말', style: GoogleFonts.gaegu(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black)),
+        TextField(
+          controller: _pageNotesController,
+          maxLines: null,
+          maxLength: 150,
+          style: GoogleFonts.gaegu(fontSize: 20, color: Colors.black),
+          decoration: InputDecoration(
+            hintText: '이 날의 특별한 감상을 적어주세요',
+            hintStyle: GoogleFonts.gaegu(fontSize: 18, color: Colors.grey.shade400),
+            border: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.5)),
+            enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black54, width: 1.5)),
+            focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 2.5)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            counterStyle: GoogleFonts.gaegu(fontSize: 11, color: Colors.grey),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // 📸 사진 보관
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('📸 사진 보관', style: GoogleFonts.gaegu(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black)),
+            Text('${_pageImages.length}/3장', style: GoogleFonts.gaegu(fontSize: 14, color: Colors.grey, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            ...List.generate(_pageImages.length, (idx) {
+              final imgStr = _pageImages[idx];
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 2),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Image.memory(
+                          base64Decode(imgStr.replaceFirst(RegExp(r'data:image/[^;]+;base64,'), '')),
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
                         ),
-                      );
-                    }),
-                    if (_pageImages.length < 3)
-                      GestureDetector(
-                        onTap: _pickImage,
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.black, width: 2, style: BorderStyle.solid), // dashed simulation
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.camera_alt_outlined, size: 18, color: Colors.grey),
-                              Text('ADD', style: TextStyle(fontSize: 8, color: Colors.grey, fontWeight: FontWeight.bold)),
-                            ],
+                      ),
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () => _removeSelectedImage(idx),
+                          child: Container(
+                            color: Colors.black,
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                            child: const Text('X', style: TextStyle(fontSize: 8, color: Colors.white, fontWeight: FontWeight.bold)),
                           ),
                         ),
                       )
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Felt tip inputs block
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.05),
-                  border: Border.all(color: Colors.black, width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: const [BoxShadow(color: Colors.black, offset: Offset(2, 2))],
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Write down with black felt-tip pen',
-                      style: GoogleFonts.gaegu(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('🖋️ 무엇을 하였나요?', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: _pageDoneController,
-                          maxLines: 2,
-                          maxLength: 120,
-                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '오늘 제일 특별하게 선을 그은 하루 발자국은?',
-                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
-                            fillColor: Colors.white,
-                            filled: true,
-                            contentPadding: const EdgeInsets.all(8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('🍴 무엇을 먹었나요?', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: _pageEatenController,
-                          maxLines: 2,
-                          maxLength: 120,
-                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '내 혀끝에 기쁨의 한 획을 그어준 소중한 음식은?',
-                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
-                            fillColor: Colors.white,
-                            filled: true,
-                            contentPadding: const EdgeInsets.all(8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('🛍️ 무엇을 샀나요?', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: _pageBoughtController,
-                          maxLines: 2,
-                          maxLength: 120,
-                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '소품샵, 골목 마켓에서 찾아낸 나만의 빈티지 보물은?',
-                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
-                            fillColor: Colors.white,
-                            filled: true,
-                            contentPadding: const EdgeInsets.all(8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('💬 더 하고 싶은 말 (말풍선 기록)', style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
-                        const SizedBox(height: 4),
-                        TextField(
-                          controller: _pageNotesController,
-                          maxLines: 3,
-                          maxLength: 150,
-                          style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '이 날의 특별한 생각이나 전체적인 감상을 말풍선에 담아보세요!',
-                            hintStyle: GoogleFonts.gaegu(color: Colors.grey, fontStyle: FontStyle.italic, fontSize: 16),
-                            fillColor: Colors.white,
-                            filled: true,
-                            contentPadding: const EdgeInsets.all(8),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Save button
-              GestureDetector(
-                onTap: isEdit ? _handleUpdatePage : _handleCreatePage,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(color: Colors.black, width: 2),
+                    ],
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    isEdit ? '기록 수정 완료하기 ✏_' : '하루 스케치 저장하기 🖋️',
-                    style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              );
+            }),
+            if (_pageImages.length < 3)
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 2),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.camera_alt_outlined, size: 20, color: Colors.grey),
+                      Text('추가', style: GoogleFonts.gaegu(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.bold)),
+                    ],
                   ),
                 ),
               )
+          ],
+        ),
 
-            ],
+        const SizedBox(height: 28),
+
+        // Save button
+        GestureDetector(
+          onTap: isEdit ? _handleUpdatePage : _handleCreatePage,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              border: Border.all(color: Colors.black, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              isEdit ? '기록 수정 완료하기 ✏️' : '하루 스케치 저장하기 🖋️',
+              style: GoogleFonts.gaegu(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
           ),
-        )
+        ),
+
+        const SizedBox(height: 20),
       ],
     );
   }
