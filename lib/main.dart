@@ -17,7 +17,7 @@ class MongleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '몽글수첩',
+      title: '토끼야 여행기',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: ThemeData(
@@ -417,44 +417,46 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDFBF7),
-      body: Center(
-        child: Container(
-          width: maxViewportWidth,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.symmetric(
-              vertical: BorderSide(color: Colors.black, width: width > 480 ? 4 : 0),
-            ),
-            boxShadow: width > 480
-                ? const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(8, 8),
-                      blurRadius: 0,
-                    )
-                  ]
-                : null,
-          ),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // 1. Hand Drawn Custom Header
-                  if (_currentView == 'home')
-                    _buildHeader()
-                  else
-                    const SafeArea(child: SizedBox.shrink()),
-
-                  // 2. View selector
-                  Expanded(
-                    child: _buildCurrentView(),
-                  ),
-                ],
+      body: SafeArea(
+        child: Center(
+          child: Container(
+            width: maxViewportWidth,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.symmetric(
+                vertical: BorderSide(color: Colors.black, width: width > 480 ? 4 : 0),
               ),
+              boxShadow: width > 480
+                  ? const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(8, 8),
+                        blurRadius: 0,
+                      )
+                    ]
+                  : null,
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // 1. Hand Drawn Custom Header
+                    if (_currentView == 'home')
+                      _buildHeader()
+                    else
+                      const SafeArea(child: SizedBox.shrink()),
 
-              // 3. Custom Sketch Alert/Confirm Dialog
-              if (_dialogShow) _buildCustomDialog(),
-            ],
+                    // 2. View selector
+                    Expanded(
+                      child: _buildCurrentView(),
+                    ),
+                  ],
+                ),
+
+                // 3. Custom Sketch Alert/Confirm Dialog
+                if (_dialogShow) _buildCustomDialog(),
+              ],
+            ),
           ),
         ),
       ),
@@ -500,7 +502,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '몽글수첩',
+                        '토끼야 여행기',
                         style: GoogleFonts.gaegu(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -596,7 +598,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             child: Row(
               children: [
                 Text(
-                  '📖 내가 채워낸 소소한 날들 (${_notebooks.length})',
+                  '📖 여행 수첩 책장 (${_notebooks.length})',
                   style: GoogleFonts.gaegu(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -821,7 +823,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       child: Text(
                         '${_formatShortDateWithYear(book.startDate)}~${_formatShortDateWithYear(book.endDate)}',
                         style: GoogleFonts.gaegu(
-                          fontSize: 12,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -849,7 +851,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Text(
-              '← 도화지 목록으로 돌아가기',
+              '← 여행 수첩 목록으로 돌아가기',
               style: GoogleFonts.gaegu(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
             ),
           ),
@@ -880,7 +882,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 maxLength: 15,
                 style: GoogleFonts.gaegu(fontSize: 18, color: Colors.black),
                 decoration: InputDecoration(
-                  hintText: '예) 제주도 푸른바람 🌴',
+                  hintText: '예) 동기들이랑 제주도 여행 🌴',
                   hintStyle: GoogleFonts.gaegu(fontSize: 16, color: Colors.grey),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   border: OutlineInputBorder(
@@ -1083,7 +1085,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    '수첩 한 장 제작하기 📔',
+                    '수첩 만들기',
                     style: GoogleFonts.gaegu(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
